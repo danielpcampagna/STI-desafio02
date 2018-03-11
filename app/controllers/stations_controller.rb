@@ -1,10 +1,21 @@
 class StationsController < ApplicationController
+  # => require 'rio_station_service'
   before_action :set_station, only: [:show, :edit, :update, :destroy]
 
   # GET /stations
   # GET /stations.json
   def index
     @stations = Station.all
+    if @stations.empty?
+      stations = RioStationService.get
+      columns  = stations["COLUMNS"].map {|c| RioStationService.DICTIONARY[c] }
+      data     = stations["DATA"]
+      if (columns - Station.column_names).empty?
+        for d in data
+          Station.create(columns.each_with_index.map {|c,i| [c,d[i]] }.to_h)
+        end
+      end
+    end
   end
 
   # GET /stations/1
