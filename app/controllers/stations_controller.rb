@@ -3,7 +3,7 @@ class StationsController < ApplicationController
   before_action :set_station, only: [:show, :edit, :update, :destroy]
 
   def suggests
-    if [:q, :street, :city].all? {|k| params.key? k}
+    if [:q, :street, :city].any? {|k| params.key? k}
       request_params = {
         limit:  10
       }
