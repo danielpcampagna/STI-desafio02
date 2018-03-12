@@ -10,6 +10,7 @@ class StationsController < ApplicationController
 
       request_params[:q] = params[:q] if params.has_key?(:q)
       request_params[:street] = params[:street] if params.has_key?(:street)
+      request_params[:city] = "Rio de Janeiro"
       request_params[:city] = params[:city] if params.has_key?(:city)
 
       result = OpenStreetMapService.get(request_params).map do |data|
