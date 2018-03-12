@@ -5,12 +5,14 @@ class StationsController < ApplicationController
   def suggests
     if [:q, :street, :city].any? {|k| params.key? k}
       request_params = {
-        limit:  10
+        limit:  10,
+        city: "Rio de Janeiro",
+        state: "RJ",
+        country: "Brasil"
       }
 
       request_params[:q] = params[:q] if params.has_key?(:q)
       request_params[:street] = params[:street] if params.has_key?(:street)
-      request_params[:city] = "Rio de Janeiro"
       request_params[:city] = params[:city] if params.has_key?(:city)
 
       result = OpenStreetMapService.get(request_params).map do |data|
