@@ -48,9 +48,19 @@ class StationsController < ApplicationController
     end
 
     if params.has_key?(:lat) && params.has_key?(:lon)
-      lat = params[:lat]
-      lon = params[:lon]
-      result = @stations.map {|s| Math.sqrt((s[:latitude] - lat)**2, (s[:longitude] - lon)**2)}.min
+      lat = params[:lat].to_f
+      lon = params[:lon].to_f
+      result = @stations.all.map do |s|
+        {
+          station: s.attributes,
+          distance: Math.sqrt((s[:latitude] - lat)**2 + (s[:longitude] - lon)**2)
+        }
+      end
+      result = result.min { |a,b| a[:distance] <=> b[:distance] }
+      result[:station].keys.each {|k|
+        result[:station][k] = result[:station][k].force_encoding("ISO-8859-1").encode("UTF-8") if result[:station][k].class == String
+      }
+
     end
     respond_to do |format|
       format.json { render :json => result }
