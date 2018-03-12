@@ -2,9 +2,35 @@ class StationsController < ApplicationController
   # => require 'rio_station_service'
   before_action :set_station, only: [:show, :edit, :update, :destroy]
 
-  # GET /stations
-  # GET /stations.json
-  def index
+  def suggests
+    if [:q, :street, :city].all? {|k| params.key? k}
+      request_params = {
+        limit:  10
+      }
+
+      request_params[:q] = params[:q] if params.has_key?(:q)
+      request_params[:street] = params[:street] if params.has_key?(:street)
+      request_params[:city] = params[:city] if params.has_key?(:city)
+
+      result = OpenStreetMapService.get(request_params).map do |data|
+        {
+          lat: data["lat"],
+          lon: data["lon"],
+          street: data["address"]["road"],
+          suburb: data["address"]["suburb"],
+          city_district: data["address"]["city_district"],
+          city: data["address"]["city"],
+          state: data["address"]["state"],
+          country: data["address"]["country"]
+        }
+      end
+      respond_to do |format|
+        format.json { render :json => result }
+      end
+    end
+  end
+
+  def search
     @stations = Station.all
     result = nil
     if @stations.empty?
