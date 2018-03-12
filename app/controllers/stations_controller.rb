@@ -6,6 +6,7 @@ class StationsController < ApplicationController
   # GET /stations.json
   def index
     @stations = Station.all
+    result = nil
     if @stations.empty?
       stations = RioStationService.get
       columns  = stations["COLUMNS"].map {|c| RioStationService.DICTIONARY[c] }
@@ -16,7 +17,24 @@ class StationsController < ApplicationController
         end
       end
     end
+
+    if params.has_key?(:lat) && params.has_key?(:lon)
+      lat = params[:lat]
+      lon = params[:lon]
+      result = @stations.map {|s| Math.sqrt((s[:latitude] - lat)**2, (s[:longitude] - lon)**2)}.min
+    end
+    respond_to do |format|
+      format.json { render :json => result }
+    end
   end
+
+  # GET /stations
+  # GET /stations.json
+  def index
+    @stations = Station.all
+    @station = nil
+  end
+
 
   # GET /stations/1
   # GET /stations/1.json
