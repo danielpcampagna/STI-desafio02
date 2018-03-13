@@ -19,12 +19,12 @@ class StationsController < ApplicationController
         {
           lat: data["lat"],
           lon: data["lon"],
-          street: data["address"]["road"].force_encoding("ISO-8859-1").encode("UTF-8"),
-          suburb: data["address"]["suburb"].force_encoding("ISO-8859-1").encode("UTF-8"),
-          city_district: data["address"]["city_district"].force_encoding("ISO-8859-1").encode("UTF-8"),
-          city: data["address"]["city"].force_encoding("ISO-8859-1").encode("UTF-8"),
-          state: data["address"]["state"].force_encoding("ISO-8859-1").encode("UTF-8"),
-          country: data["address"]["country"].force_encoding("ISO-8859-1").encode("UTF-8")
+          street: data["address"]["road"],
+          suburb: data["address"]["suburb"],
+          city_district: data["address"]["city_district"],
+          city: data["address"]["city"],
+          state: data["address"]["state"],
+          country: data["address"]["country"]
         }
       end
       respond_to do |format|
