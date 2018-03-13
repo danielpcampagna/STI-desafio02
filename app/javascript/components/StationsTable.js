@@ -46,8 +46,8 @@ class StationsTable extends React.Component {
 		      		        <td> {station.number} </td>
 		      		        <td> {station.latitude} </td>
 		      		        <td> {station.longitude} </td>
-		      		        <td> <a href="stations/{stations.id}"> show </a> </td>
-		      		        <td> <a href="stations/{stations.id}/edit"> edit </a> </td>
+		      		        <td> <a href={'stations/' + station.id}> show </a> </td>
+		      		        <td> <a href={'stations/' + station.id + '/edit'}> edit </a> </td>
 		      		      </tr>);
 		    })}
 		  </tbody>
