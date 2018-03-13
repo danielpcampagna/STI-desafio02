@@ -16,9 +16,9 @@ class SuggestOptionItem extends React.Component {
     .then(res => res.json())
     .then(
       (result) => {
-        //Dispatch an event
-        var evt = new CustomEvent("FoundStation", result);
-        window.dispatchEvent(evt);
+        // var evt = new CustomEvent("", result);
+        // window.dispatchEvent(evt);
+        $(document).trigger( "FoundStation", result );
       },
       (error) => {
         console.err(error);
