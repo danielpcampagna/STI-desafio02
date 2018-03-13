@@ -19,12 +19,12 @@ class StationsController < ApplicationController
         {
           lat: data["lat"],
           lon: data["lon"],
-          street: data["address"]["road"],
-          suburb: data["address"]["suburb"],
-          city_district: data["address"]["city_district"],
-          city: data["address"]["city"],
-          state: data["address"]["state"],
-          country: data["address"]["country"]
+          street: data["address"]["road"].force_encoding("ISO-8859-1").encode("UTF-8"),
+          suburb: data["address"]["suburb"].force_encoding("ISO-8859-1").encode("UTF-8"),
+          city_district: data["address"]["city_district"].force_encoding("ISO-8859-1").encode("UTF-8"),
+          city: data["address"]["city"].force_encoding("ISO-8859-1").encode("UTF-8"),
+          state: data["address"]["state"].force_encoding("ISO-8859-1").encode("UTF-8"),
+          country: data["address"]["country"].force_encoding("ISO-8859-1").encode("UTF-8")
         }
       end
       respond_to do |format|
@@ -36,15 +36,11 @@ class StationsController < ApplicationController
   def search
     @stations = Station.all
     result = nil
+
+    # when will check new stations?
     if @stations.empty?
-      stations = RioStationService.get
-      columns  = stations["COLUMNS"].map {|c| RioStationService.DICTIONARY[c] }
-      data     = stations["DATA"]
-      if (columns - Station.column_names).empty?
-        for d in data
-          Station.create(columns.each_with_index.map {|c,i| [c,d[i]] }.to_h)
-        end
-      end
+      get_station
+      @stations = Station.all
     end
 
     if params.has_key?(:lat) && params.has_key?(:lon)
@@ -57,9 +53,6 @@ class StationsController < ApplicationController
         }
       end
       result = result.min { |a,b| a[:distance] <=> b[:distance] }
-      result[:station].keys.each {|k|
-        result[:station][k] = result[:station][k].force_encoding("ISO-8859-1").encode("UTF-8") if result[:station][k].class == String
-      }
 
     end
     respond_to do |format|
@@ -71,7 +64,12 @@ class StationsController < ApplicationController
   # GET /stations.json
   def index
     @stations = Station.all
-    @station = nil
+    if(@stations.empty?)
+      get_station
+      @stations = Station.all
+    end
+    gon.stations = @stations
+    gon.your_int = 1
   end
 
 
@@ -138,5 +136,23 @@ class StationsController < ApplicationController
     # Never trust parameters from the scary internet, only allow the white list through.
     def station_params
       params.require(:station).permit(:neighborhood, :station, :code, :address, :number, :latitude, :longitude)
+    end
+
+    def get_station
+      stations = RioStationService.get
+      columns  = stations["COLUMNS"].map {|c| RioStationService.DICTIONARY[c] }
+      data     = stations["DATA"]
+      if (columns - Station.column_names).empty?
+        for d in data
+          d = d.map do |i|
+            if(i.class == String)
+              i.force_encoding("ISO-8859-1").encode("UTF-8")
+            else
+              i
+            end
+          end
+          Station.create(columns.each_with_index.map {|c,i| [c,d[i]] }.to_h)
+        end
+      end
     end
 end
