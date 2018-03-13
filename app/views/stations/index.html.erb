@@ -1,6 +1,9 @@
 <p id="notice"><%= notice %></p>
 
-<%= react_component("SuggestBar") %>
+<div>
+  <span >Informe o endereço: </span>
+  <div ><%= react_component("SuggestBar") %> </div>
+</div>
 <%= react_component("StationsTable", {stations: @stations}) %>
 
 
