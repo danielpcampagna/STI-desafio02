@@ -13,9 +13,9 @@ class StationsTable extends React.Component {
 		$(document).on( "FoundStation", this.selectStations);
 	}
 
-	selectStations(e){
-		console.log(e);
-		this.setState({stations: [e.station]});
+	selectStations(e,data){
+		console.log(data);
+		this.setState({stations: [data.station]});
 	}
 
   render () {

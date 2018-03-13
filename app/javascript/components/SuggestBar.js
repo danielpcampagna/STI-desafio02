@@ -20,7 +20,7 @@ class SuggestBar extends React.Component {
     // window.addEventListener("FoundStation", this.resetState, false);
     $(document).on( "FoundStation", this.resetState);
   }
-  resetState(e) {
+  resetState(e, data) {
     this.setState({items: []});
   }
   focusTextInput() {
