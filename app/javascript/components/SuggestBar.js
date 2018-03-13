@@ -32,18 +32,14 @@ class SuggestBar extends React.Component {
 				const firstLetterIndex = RGX_CITY.exec(this.getInput())[0].length
 				params = "city=" + this.getInput().substr(firstLetterIndex);
 			}
-			console.log("parametros:",params)
 			fetch(END_POINT + params)
       .then(res => res.json())
       .then(
       	(result) => {
-      		console.log("find ",result.length," items");
-      		console.log("items: ",result);
       		this.setState({items: result});
       	},
       	(error) => {
-      		console.log("error");
-      		console.err(error);
+      		console.error(error);
         }
       )
 		}
