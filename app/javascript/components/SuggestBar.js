@@ -12,8 +12,16 @@ class SuggestBar extends React.Component {
 		this.state = {
 			items: []
 		}
+
+    this.resetState = this.resetState.bind(this);
 		this.focusTextInput = this.focusTextInput.bind(this);
 		this.handleKeyUp = this.handleKeyUp.bind(this);
+
+		//Listen for the event
+    window.addEventListener("FoundStation", this.resetState, false);
+	}
+	resetState(data) {
+  	this.setState({items: []});
 	}
 	focusTextInput() {
     this.textInput.focus();
